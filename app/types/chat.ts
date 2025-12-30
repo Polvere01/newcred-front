@@ -1,4 +1,5 @@
 export type Direcao = 'ENTRADA' | 'SAIDA'
+export type MensagemTipo = 'text' | 'audio' | 'image' | 'video' | 'document'
 
 export interface Conversa {
   id: number
@@ -9,6 +10,7 @@ export interface Conversa {
 export interface Mensagem {
   id: number
   texto: string
+  tipo: MensagemTipo
   direcao: Direcao
   createdAt: string
 }
