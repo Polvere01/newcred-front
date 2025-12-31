@@ -17,24 +17,20 @@
       </div>
 
       <div v-else-if="mensagem.tipo === 'audio'">
-        <audio controls :src="mediaUrl" class="w-[220px]" />
+        <audio controls :src="mediaUrl" class="w-[220px]"   @loadedmetadata="onMediaLoaded"  @canplay="onMediaLoaded"/>
       </div>
 
       <div v-else-if="mensagem.tipo === 'image'">
-        <img :src="mediaUrl" class="w-[220px] h-auto rounded-lg" />
+        <img :src="mediaUrl" class="w-[220px] h-auto rounded-lg" @load="onMediaLoaded" />
       </div>
 
       <div v-else-if="mensagem.tipo === 'video'">
-        <video controls :src="mediaUrl" class="w-[220px] h-auto rounded-lg" />
+        <video controls :src="mediaUrl" class="w-[220px] h-auto rounded-lg" @load="onMediaLoaded"/>
       </div>
 
       <div v-else-if="mensagem.tipo === 'document'">
-        <a :href="mediaUrl" target="_blank" class="text-blue-500 underline">Ver documento</a>
+        <a :href="mediaUrl" target="_blank" class="text-blue-500 underline" @load="onMediaLoaded">Ver documento</a>
       </div>    
-
-      <div v-else>
-        (tipo não suportado)
-      </div>
 
       <div class="text-[10px] opacity-70 mt-1 text-right">
         {{ hora }}
@@ -60,4 +56,12 @@ const baseURL = config.public.apiBase as string
 const mediaUrl = computed(() => {
   return `${baseURL}/conversas/${props.mensagem.id}/media`
 })
+
+const emit = defineEmits<{
+  (e: 'mediaLoaded'): void
+}>()
+
+function onMediaLoaded() {
+  emit('mediaLoaded')
+}
 </script>

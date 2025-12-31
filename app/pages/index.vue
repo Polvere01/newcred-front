@@ -10,6 +10,7 @@
     :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
     :mensagens="mensagens"
     @send="enviarMensagem"
+    @send-audio="enviarAudio"
     />
   </div>
 </template>
@@ -23,7 +24,7 @@ import ChatWindow from '~/components/ChatWindow.vue'
 import { useChatApi } from '~/composables/useChatApi'
 import { formatarTelefone } from '~/utils/phone'
 
-const { listarConversas, listarMensagens, enviarMensagem: enviarMensagemApi } = useChatApi()
+const { listarConversas, listarMensagens, enviarMensagem: enviarMensagemApi, enviarAudio: enviarAudioApi } = useChatApi()
 
 const conversas = ref<Conversa[]>([])
 const conversaSelecionada = ref<Conversa | null>(null)
@@ -69,7 +70,7 @@ function iniciarPolling(conversaId: number) {
   pararPolling()
   pollId = setInterval(() => {
     carregarMensagens(conversaId)
-  }, 500) // 1 segundo
+  }, 500)
 }
 
 
@@ -93,7 +94,7 @@ function iniciarPollingConversas() {
   pararPollingConversas()
   convPollId = setInterval(() => {
     carregarConversas()
-  }, 2000) // 2s (1s é meio exagero pra lista)
+  }, 2000) // 2s 
 }
 
 // Carrega mensagens quando muda a conversa (observando só o ID)
@@ -112,6 +113,16 @@ watch(
   },
   { immediate: true }
 )
+
+async function enviarAudio(blob: Blob, mime: string) {
+  console.log('[index] enviarAudio chamado', blob.size, mime)
+  const c = conversaSelecionada.value
+  if (!c) return
+
+  const msg = await enviarAudioApi(c, blob, mime)
+  mensagens.value.push(msg)
+}
+
 async function enviarMensagem(texto: string) {
   const c = conversaSelecionada.value
   if (!c) return

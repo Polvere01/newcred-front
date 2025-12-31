@@ -6,19 +6,19 @@
     </div>
 
     <!-- Mensagens -->
-    <div
-      ref="listRef"
-      class="flex-1 p-4 overflow-y-auto space-y-2"
-    >
+    <div ref="listRef" class="flex-1 p-4 overflow-y-auto space-y-2">
       <MessageBubble
         v-for="m in props.mensagens"
         :key="m.id"
         :mensagem="m"
+        @mediaLoaded="onMediaLoaded"
       />
     </div>
 
     <!-- Input -->
-    <MessageInput @send="(texto) => emit('send', texto)" />
+    <MessageInput @send="(texto) => emit('send', texto)"
+      @send-audio="(blob, mime) => emit('send-audio', blob, mime)"
+      />
   </main>
 </template>
 
@@ -35,6 +35,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'send', texto: string): void
+  (e: 'send-audio', blob: Blob, mime: string): void
 }>()
 
 const listRef = ref<HTMLElement | null>(null)
@@ -45,14 +46,16 @@ function scrollToBottom() {
   el.scrollTop = el.scrollHeight
 }
 
-// desce o scroll quando:
-// - troca de conversa (titulo muda)
-// - chega mensagem nova (length muda)
 watch(
-  () => [props.titulo, props.mensagens.length],
+  () => props.mensagens.length,
   async () => {
     await nextTick()
     scrollToBottom()
-  }
+  },
+  { immediate: true }
 )
+
+function onMediaLoaded() {
+  nextTick(() => scrollToBottom())
+}
 </script>
