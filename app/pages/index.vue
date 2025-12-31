@@ -1,20 +1,26 @@
 <template>
-  <div class="h-screen flex bg-gray-100">
-    <ConversaList
-      :conversas="conversas"
-      :selecionada-id="conversaSelecionada?.id ?? null"
-      @select="conversaSelecionada = $event"
-    />
+  <div class="h-screen flex flex-col bg-gray-100">
+    <!-- Header com logout -->
+    <AppHeader />
 
-    <ChatWindow
-    :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
-    :mensagens="mensagens"
-    @send="enviarMensagem"
-    @send-audio="enviarAudio"
-    @send-video="enviarVideo"
-    @send-image="enviarImagem"
-    @send-pdf="enviarPdf"
-    />
+    <!-- Conteúdo principal -->
+    <div class="flex flex-1">
+      <ConversaList
+        :conversas="conversas"
+        :selecionada-id="conversaSelecionada?.id ?? null"
+        @select="conversaSelecionada = $event"
+      />
+
+      <ChatWindow
+        :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
+        :mensagens="mensagens"
+        @send="enviarMensagem"
+        @send-audio="enviarAudio"
+        @send-video="enviarVideo"
+        @send-image="enviarImagem"
+        @send-pdf="enviarPdf"
+      />
+    </div>
   </div>
 </template>
 
@@ -37,6 +43,11 @@ let convPollId: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
   try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      await navigateTo('/login')
+      return
+    }
     conversas.value = await listarConversas()
     conversaSelecionada.value = conversas.value[0] ?? null
     iniciarPollingConversas()

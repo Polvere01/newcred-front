@@ -12,7 +12,26 @@ type EnviarResp = { wamid: string }
 export function useChatApi() {
   const config = useRuntimeConfig()
   const baseURL = config.public.apiBase as string
-  const api = $fetch.create({ baseURL })
+  const api = $fetch.create({
+    baseURL,
+
+    onRequest({ options }) {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      const headers = new Headers(options.headers as HeadersInit)
+      headers.set('Authorization', `Bearer ${token}`)
+      options.headers = headers
+    },
+
+    onResponseError({ response }) {
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        navigateTo('/login')
+      }
+    }
+  })
 
   return {
     listarConversas: () => api<Conversa[]>('/conversas'),
