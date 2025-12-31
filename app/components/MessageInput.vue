@@ -62,7 +62,6 @@ function onSendTexto() {
 }
 
 async function toggleGravacao() {
-  console.log('[MessageInput] click, gravando=', gravando.value)
   if (busy.value) return
 
   if (!gravando.value) {
@@ -89,10 +88,8 @@ async function toggleGravacao() {
       recorder.onstop = () => {
         const type = recorder?.mimeType || 'audio/webm'
         const blob = new Blob(chunks, { type })
-        console.log('[MessageInput] onstop, chunks=', chunks.length)
         // envia pro pai (index.vue) pra chamar backend
         emit('send-audio', blob, type)
-        console.log('[MessageInput] emitiu send-audio', blob.size, type)
         // limpa mic
         stream?.getTracks().forEach(t => t.stop())
         stream = null

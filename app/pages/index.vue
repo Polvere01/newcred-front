@@ -115,7 +115,6 @@ watch(
 )
 
 async function enviarAudio(blob: Blob, mime: string) {
-  console.log('[index] enviarAudio chamado', blob.size, mime)
   const c = conversaSelecionada.value
   if (!c) return
 

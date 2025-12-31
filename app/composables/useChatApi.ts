@@ -48,8 +48,6 @@ export function useChatApi() {
       const fileExt = mime.includes('ogg') ? 'ogg' : 'webm'
       const file = new File([blob], `audio.${fileExt}`, { type: mime })
 
-      console.log('[enviarAudio] start', conversa.id, mime, blob.size)
-
       const fd = new FormData()
       fd.append('waIdDestino', conversa.nome) // @RequestParam
       fd.append('audio', file)               // @RequestPart("audio")
@@ -58,8 +56,6 @@ export function useChatApi() {
         `/conversas/${conversa.id}/mensagens/audio`,
         { method: 'POST', body: fd }
       )
-
-      console.log('[enviarAudio] ok', resp)
 
       // mensagem otimista pra aparecer na hora
       const msg: Mensagem = {
