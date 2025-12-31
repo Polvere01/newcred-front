@@ -16,9 +16,13 @@
     </div>
 
     <!-- Input -->
-    <MessageInput @send="(texto) => emit('send', texto)"
+    <MessageInput
+      @send="(texto) => emit('send', texto)"
       @send-audio="(blob, mime) => emit('send-audio', blob, mime)"
-      />
+      @send-video="(file) => emit('send-video', file)"
+      @send-image="(file) => emit('send-image', file)"
+      @send-pdf="(file) => emit('send-pdf', file)"
+    />
   </main>
 </template>
 
@@ -36,6 +40,9 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'send', texto: string): void
   (e: 'send-audio', blob: Blob, mime: string): void
+  (e: 'send-video', file: File): void
+  (e: 'send-image', file: File): void
+  (e: 'send-pdf', file: File): void
 }>()
 
 const listRef = ref<HTMLElement | null>(null)

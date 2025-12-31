@@ -32,6 +32,10 @@
         <a :href="mediaUrl" target="_blank" class="text-blue-500 underline" @load="onMediaLoaded">Ver documento</a>
       </div>    
 
+      <div v-else-if="mensagem.tipo === 'pdf'">
+        <a    :href="mediaUrl"    target="_blank"    class="text-blue-600 underline"  >    📄 Ver documento  </a>
+      </div>
+
       <div class="text-[10px] opacity-70 mt-1 text-right">
         {{ hora }}
       </div>

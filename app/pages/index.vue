@@ -11,6 +11,9 @@
     :mensagens="mensagens"
     @send="enviarMensagem"
     @send-audio="enviarAudio"
+    @send-video="enviarVideo"
+    @send-image="enviarImagem"
+    @send-pdf="enviarPdf"
     />
   </div>
 </template>
@@ -24,7 +27,7 @@ import ChatWindow from '~/components/ChatWindow.vue'
 import { useChatApi } from '~/composables/useChatApi'
 import { formatarTelefone } from '~/utils/phone'
 
-const { listarConversas, listarMensagens, enviarMensagem: enviarMensagemApi, enviarAudio: enviarAudioApi } = useChatApi()
+const { listarConversas, listarMensagens, enviarMensagem: enviarMensagemApi, enviarAudio: enviarAudioApi, enviarVideo: enviarVideoApi, enviarImagem: enviarImagemApi, enviarPdf: enviarPdfApi } = useChatApi()
 
 const conversas = ref<Conversa[]>([])
 const conversaSelecionada = ref<Conversa | null>(null)
@@ -119,6 +122,42 @@ async function enviarAudio(blob: Blob, mime: string) {
   if (!c) return
 
   const msg = await enviarAudioApi(c, blob, mime)
+  mensagens.value.push(msg)
+}
+
+async function enviarVideo(file: File) {
+  const c = conversaSelecionada.value
+  if (!c) return
+
+  try {
+    const msg = await enviarVideoApi(c, file)
+    mensagens.value.push(msg)
+
+    // opcional: atualizar preview da conversa
+    const idx = conversas.value.findIndex(x => x.id === c.id)
+    if (idx >= 0) {
+      conversas.value[idx] = { ...conversas.value[idx]!, ultimaMensagem: '[vídeo]' }
+      const item = conversas.value.splice(idx, 1)[0]
+      if (item) conversas.value.unshift(item)
+    }
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+async function enviarImagem(file: File) {
+  const c = conversaSelecionada.value
+  if (!c) return
+
+  const msg = await enviarImagemApi(c, file)
+  mensagens.value.push(msg)
+}
+
+async function enviarPdf(file: File) {
+  const c = conversaSelecionada.value
+  if (!c) return
+
+  const msg = await enviarPdfApi(c, file)
   mensagens.value.push(msg)
 }
 

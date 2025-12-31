@@ -1,6 +1,63 @@
 <template>
-  <div class="p-3 bg-white border-t flex gap-2 items-center">
-    <!-- Botão de gravar/enviar -->
+  <div class="p-3 bg-white border-t flex gap-2 items-center relative">
+    <!-- Botão + -->
+    <button
+      type="button"
+      class="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+      @click="menuOpen = !menuOpen"
+      :disabled="busy || gravando"
+      title="Adicionar"
+    >
+      +
+    </button>
+
+    <!-- menu -->
+    <div
+      v-if="menuOpen"
+      class="absolute bottom-14 left-3 bg-white border rounded-lg shadow-md w-44 overflow-hidden z-10"
+    >
+      <button
+        type="button"
+        class="w-full text-left px-3 py-2 hover:bg-gray-100"
+        @click="selecionarVideo"
+      >Adicionar vídeo
+      </button>
+      
+      <button type="button" class="w-full text-left px-3 py-2 hover:bg-gray-100"
+        @click="abrirImagem">Adicionar imagem
+      </button>
+
+      <button type="button" class="w-full text-left px-3 py-2 hover:bg-gray-100"
+      @click="abrirPdf">Adicionar PDF</button>
+
+    </div>
+
+    <!-- input hidden de vídeo -->
+    <input
+      ref="videoInput"
+      type="file"
+      accept="video/*"
+      class="hidden"
+      @change="onVideoChange"
+    />
+
+    <input
+      ref="imgInput"
+      type="file"
+      accept="image/*"
+      class="hidden"
+      @change="onPickImagem"
+    />
+
+    <input
+      ref="pdfInput"
+      type="file"
+      accept="application/pdf"
+      class="hidden"
+      @change="onPickPdf"
+    />
+
+    <!-- Botão de gravar/enviar áudio -->
     <button
       type="button"
       class="px-3 py-2 rounded-lg text-white"
@@ -44,11 +101,18 @@ import { ref } from 'vue'
 const emit = defineEmits<{
   (e: 'send', texto: string): void
   (e: 'send-audio', blob: Blob, mime: string): void
+  (e: 'send-video', file: File): void
+  (e: 'send-image', file: File): void
+  (e: 'send-pdf', file: File): void
 }>()
 
 const texto = ref('')
 const gravando = ref(false)
 const busy = ref(false)
+
+const menuOpen = ref(false)
+const videoInput = ref<HTMLInputElement | null>(null)
+const pdfInput = ref<HTMLInputElement | null>(null)
 
 let recorder: MediaRecorder | null = null
 let chunks: BlobPart[] = []
@@ -61,6 +125,49 @@ function onSendTexto() {
   texto.value = ''
 }
 
+function selecionarVideo() {
+  menuOpen.value = false
+  videoInput.value?.click()
+}
+
+function onVideoChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  emit('send-video', file)
+
+  // reset pra permitir selecionar o mesmo arquivo de novo
+  input.value = ''
+}
+
+const imgInput = ref<HTMLInputElement | null>(null)
+
+function abrirImagem() {
+  imgInput.value?.click()
+}
+
+function onPickImagem(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+
+  emit('send-image', file)
+
+  // limpa pra poder escolher o mesmo arquivo de novo
+  ;(e.target as HTMLInputElement).value = ''
+}
+
+function abrirPdf() {
+  pdfInput.value?.click()
+}
+
+function onPickPdf(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  emit('send-pdf', file)
+  ;(e.target as HTMLInputElement).value = ''
+}
+
 async function toggleGravacao() {
   if (busy.value) return
 
@@ -70,7 +177,6 @@ async function toggleGravacao() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
-      // preferir webm/opus (Chrome) ou ogg/opus (alguns)
       const mime =
         MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
           ? 'audio/webm;codecs=opus'
@@ -88,9 +194,8 @@ async function toggleGravacao() {
       recorder.onstop = () => {
         const type = recorder?.mimeType || 'audio/webm'
         const blob = new Blob(chunks, { type })
-        // envia pro pai (index.vue) pra chamar backend
         emit('send-audio', blob, type)
-        // limpa mic
+
         stream?.getTracks().forEach(t => t.stop())
         stream = null
         recorder = null
@@ -101,7 +206,6 @@ async function toggleGravacao() {
       gravando.value = true
     } catch (e) {
       console.error(e)
-      // se usuário negar permissão do mic, vai cair aqui
     } finally {
       busy.value = false
     }

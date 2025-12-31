@@ -70,6 +70,73 @@ export function useChatApi() {
 
       return msg
     },
-    
+
+    enviarVideo: async (conversa: Conversa, file: File) => {
+      const fd = new FormData()
+      fd.append('waIdDestino', conversa.nome) // @RequestParam
+      fd.append('video', file)               // @RequestPart("video")
+
+      const resp = await api<{ wamid: string; mediaId: string }>(
+        `/conversas/${conversa.id}/mensagens/video`,
+        { method: 'POST', body: fd }
+      )
+
+      // mensagem otimista pra aparecer na hora
+      const msg: Mensagem = {
+        id: Date.now(),
+        texto: null,
+        tipo: 'video',
+        direcao: 'SAIDA',
+        createdAt: new Date().toISOString(),
+        wamid: resp.wamid,
+        mediaId: resp.mediaId,
+      } as any
+
+      return msg
+    },
+
+    enviarImagem: async (conversa: Conversa, file: File) => {
+      const fd = new FormData()
+      fd.append('waIdDestino', conversa.nome)
+      fd.append('imagem', file) // ou "imagem" — tem que bater com o @RequestPart
+
+      const resp = await api<{ wamid: string; mediaId: string }>(
+        `/conversas/${conversa.id}/mensagens/imagem`,
+        { method: 'POST', body: fd }
+      )
+
+      const msg: Mensagem = {
+        id: Date.now(),
+        texto: null,
+        tipo: 'imagem',
+        direcao: 'SAIDA',
+        createdAt: new Date().toISOString(),
+        wamid: resp.wamid,
+        mediaId: resp.mediaId,
+      } as any
+
+      return msg
+    },
+
+    enviarPdf: async (conversa: Conversa, file: File) => {
+      const fd = new FormData()
+      fd.append('waIdDestino', conversa.nome)
+      fd.append('pdf', file)
+
+      const resp = await api<{ wamid: string; mediaId: string }>(
+        `/conversas/${conversa.id}/mensagens/pdf`,
+        { method: 'POST', body: fd }
+      )
+
+      return {
+        id: Date.now(),
+        texto: null,
+        tipo: 'pdf',
+        direcao: 'SAIDA',
+        createdAt: new Date().toISOString(),
+        wamid: resp.wamid,
+        mediaId: resp.mediaId,
+      } as any
+    }
   }
 }
