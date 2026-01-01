@@ -7,7 +7,7 @@ type EnviarReq = {
   texto: string
 }
 
-type EnviarResp = { wamid: string }
+type EnviarResp = { mensagemId: string, wamid: string }
 
 export function useChatApi() {
   const config = useRuntimeConfig()
@@ -58,9 +58,8 @@ export function useChatApi() {
         body: payload,
       })
 
-      // cria uma Mensagem “otimista” pra já aparecer no chat
       const msg: Mensagem = {
-        id: Date.now(),
+        id: resp.mensagemId,
         texto,
         direcao: 'SAIDA',
         createdAt: new Date().toISOString(),
@@ -78,14 +77,14 @@ export function useChatApi() {
       fd.append('waIdDestino', conversa.nome) // @RequestParam
       fd.append('audio', file)               // @RequestPart("audio")
 
-      const resp = await api<{ wamid: string; mediaId: string }>(
+      const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/audio`,
         { method: 'POST', body: fd }
       )
 
       // mensagem otimista pra aparecer na hora
       const msg: Mensagem = {
-        id: Date.now(),
+        id: resp.mensagemId,
         texto: null,
         tipo: 'audio',
         direcao: 'SAIDA',
@@ -102,14 +101,14 @@ export function useChatApi() {
       fd.append('waIdDestino', conversa.nome) // @RequestParam
       fd.append('video', file)               // @RequestPart("video")
 
-      const resp = await api<{ wamid: string; mediaId: string }>(
+      const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/video`,
         { method: 'POST', body: fd }
       )
 
       // mensagem otimista pra aparecer na hora
       const msg: Mensagem = {
-        id: Date.now(),
+        id: resp.mensagemId,
         texto: null,
         tipo: 'video',
         direcao: 'SAIDA',
@@ -126,13 +125,13 @@ export function useChatApi() {
       fd.append('waIdDestino', conversa.nome)
       fd.append('imagem', file) // ou "imagem" — tem que bater com o @RequestPart
 
-      const resp = await api<{ wamid: string; mediaId: string }>(
+      const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/imagem`,
         { method: 'POST', body: fd }
       )
 
       const msg: Mensagem = {
-        id: Date.now(),
+        id: resp.mensagemId,
         texto: null,
         tipo: 'imagem',
         direcao: 'SAIDA',
@@ -149,13 +148,13 @@ export function useChatApi() {
       fd.append('waIdDestino', conversa.nome)
       fd.append('pdf', file)
 
-      const resp = await api<{ wamid: string; mediaId: string }>(
+      const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/pdf`,
         { method: 'POST', body: fd }
       )
 
-      return {
-        id: Date.now(),
+      const msg: Mensagem = {
+        id: resp.mensagemId,
         texto: null,
         tipo: 'pdf',
         direcao: 'SAIDA',
@@ -163,6 +162,8 @@ export function useChatApi() {
         wamid: resp.wamid,
         mediaId: resp.mediaId,
       } as any
+
+      return msg
     },
     baixarMedia: async (conversaId: number, mediaId: string) => {
       // importante: responseType blob

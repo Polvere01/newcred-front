@@ -24,6 +24,8 @@
 
       <a v-else-if="mensagem.tipo==='pdf'" :href="mediaSrc ?? '#'" target="_blank" class="text-blue-600 underline">📄 Ver documento</a>
 
+      <a v-else-if="mensagem.tipo==='document'" :href="mediaSrc ?? '#'" target="_blank" class="text-blue-600 underline">📄 Ver documento</a>
+
       <div class="text-[10px] opacity-70 mt-1 text-right">
         {{ hora }}
       </div>
