@@ -28,14 +28,13 @@ export function useChatApi() {
       h.set('Authorization', `Bearer ${token}`)
       options.headers = h
     },
-
     onResponseError({ response }) {
       if (import.meta.server) return
 
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        navigateTo('/login')
+        // NÃO navega aqui
       }
     },
   })

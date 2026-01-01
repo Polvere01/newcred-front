@@ -42,6 +42,10 @@ const mensagens = ref<Mensagem[]>([])
 let pollId: ReturnType<typeof setInterval> | null = null
 let convPollId: ReturnType<typeof setInterval> | null = null
 
+definePageMeta({
+  middleware: ['admin']
+})
+
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token')

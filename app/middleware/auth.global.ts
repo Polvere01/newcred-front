@@ -1,15 +1,14 @@
 export default defineNuxtRouteMiddleware((to) => {
-    if (import.meta.server) return
+  if (import.meta.server) return
 
-    const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
+  const publicRoutes = ['/login', '/forgot']
 
-    // não logado → manda pro login
-    if (!token && to.path !== '/login') {
-        return navigateTo('/login')
-    }
+  if (!token && !publicRoutes.includes(to.path)) {
+    return navigateTo('/login')
+  }
 
-    // já logado → não deixa voltar pro login
-    if (token && to.path === '/login') {
-        return navigateTo('/')
-    }
+  if (token && to.path === '/login') {
+    return navigateTo('/')
+  }
 })
