@@ -12,25 +12,32 @@ type EnviarResp = { wamid: string }
 export function useChatApi() {
   const config = useRuntimeConfig()
   const baseURL = config.public.apiBase as string
+
   const api = $fetch.create({
     baseURL,
 
     onRequest({ options }) {
+      // SSR não tem localStorage
+      if (import.meta.server) return
+
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const headers = new Headers(options.headers as HeadersInit)
-      headers.set('Authorization', `Bearer ${token}`)
-      options.headers = headers
+      // garante que headers é um Headers e seta Authorization
+      const h = new Headers(options.headers as HeadersInit | undefined)
+      h.set('Authorization', `Bearer ${token}`)
+      options.headers = h
     },
 
     onResponseError({ response }) {
+      if (import.meta.server) return
+
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         navigateTo('/login')
       }
-    }
+    },
   })
 
   return {
@@ -156,6 +163,15 @@ export function useChatApi() {
         wamid: resp.wamid,
         mediaId: resp.mediaId,
       } as any
-    }
+    },
+    baixarMedia: async (conversaId: number, mediaId: string) => {
+      // importante: responseType blob
+      const blob = await api<Blob>(`/conversas/${conversaId}/media/${mediaId}`, {
+        method: 'GET',
+        responseType: 'blob',
+      } as any)
+
+      return URL.createObjectURL(blob)
+    },
   }
 }

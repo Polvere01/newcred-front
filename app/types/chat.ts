@@ -1,5 +1,5 @@
 export type Direcao = 'ENTRADA' | 'SAIDA'
-export type MensagemTipo = 'text' | 'audio' | 'image' | 'video' | 'document'
+export type MensagemTipo = 'text' | 'audio' | 'image' | 'video' | 'document' | 'pdf'
 
 export interface Conversa {
   id: number

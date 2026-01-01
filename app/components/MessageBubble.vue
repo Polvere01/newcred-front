@@ -16,25 +16,13 @@
         {{ mensagem.texto }}
       </div>
 
-      <div v-else-if="mensagem.tipo === 'audio'">
-        <audio controls :src="mediaUrl" class="w-[220px]"   @loadedmetadata="onMediaLoaded"  @canplay="onMediaLoaded"/>
-      </div>
+      <audio v-if="mensagem.tipo==='audio'" controls :src="mediaSrc ?? ''" class="w-[220px]" />
 
-      <div v-else-if="mensagem.tipo === 'image'">
-        <img :src="mediaUrl" class="w-[220px] h-auto rounded-lg" @load="onMediaLoaded" />
-      </div>
+      <img v-else-if="mensagem.tipo==='image'" :src="mediaSrc ?? ''" class="w-[220px] h-auto rounded-lg" />
 
-      <div v-else-if="mensagem.tipo === 'video'">
-        <video controls :src="mediaUrl" class="w-[220px] h-auto rounded-lg" @load="onMediaLoaded"/>
-      </div>
+      <video v-else-if="mensagem.tipo==='video'" controls :src="mediaSrc ?? ''" class="w-[220px] h-auto rounded-lg" />
 
-      <div v-else-if="mensagem.tipo === 'document'">
-        <a :href="mediaUrl" target="_blank" class="text-blue-500 underline" @load="onMediaLoaded">Ver documento</a>
-      </div>    
-
-      <div v-else-if="mensagem.tipo === 'pdf'">
-        <a    :href="mediaUrl"    target="_blank"    class="text-blue-600 underline"  >    📄 Ver documento  </a>
-      </div>
+      <a v-else-if="mensagem.tipo==='pdf'" :href="mediaSrc ?? '#'" target="_blank" class="text-blue-600 underline">📄 Ver documento</a>
 
       <div class="text-[10px] opacity-70 mt-1 text-right">
         {{ hora }}
@@ -47,25 +35,42 @@
 import type { Mensagem } from '~/types/chat'
 
 const props = defineProps<{ mensagem: Mensagem }>()
-
-const hora = computed(() => {
-  // pega HH:mm do createdAt
-  const d = new Date(props.mensagem.createdAt)
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-})
+const emit = defineEmits<{ (e: 'mediaLoaded'): void }>()
 
 const config = useRuntimeConfig()
 const baseURL = config.public.apiBase as string
 
-const mediaUrl = computed(() => {
-  return `${baseURL}/conversas/${props.mensagem.id}/media`
+const mediaSrc = ref<string | null>(null)
+
+const hora = computed(() => {
+  const d = new Date(props.mensagem.createdAt)
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 })
 
-const emit = defineEmits<{
-  (e: 'mediaLoaded'): void
-}>()
+async function carregarMedia() {
+  if (!['audio', 'image', 'video', 'pdf', 'document'].includes(props.mensagem.tipo as any)) return
 
-function onMediaLoaded() {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  const url = `${baseURL}/conversas/${props.mensagem.id}/media`
+
+  const resp = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  if (!resp.ok) throw new Error(`Falha ao baixar media: ${resp.status}`)
+
+  const blob = await resp.blob()
+  mediaSrc.value = URL.createObjectURL(blob)
   emit('mediaLoaded')
 }
+
+onMounted(() => {
+  if (props.mensagem.id) carregarMedia().catch(console.error)
+})
+
+onBeforeUnmount(() => {
+  if (mediaSrc.value) URL.revokeObjectURL(mediaSrc.value)
+})
 </script>

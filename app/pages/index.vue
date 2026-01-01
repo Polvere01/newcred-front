@@ -4,7 +4,7 @@
     <AppHeader />
 
     <!-- Conteúdo principal -->
-    <div class="flex flex-1">
+    <div class="flex flex-1 min-h-0">
       <ConversaList
         :conversas="conversas"
         :selecionada-id="conversaSelecionada?.id ?? null"
@@ -12,6 +12,7 @@
       />
 
       <ChatWindow
+        class="flex-1 min-w-0"
         :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
         :mensagens="mensagens"
         @send="enviarMensagem"
