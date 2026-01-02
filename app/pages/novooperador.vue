@@ -68,7 +68,7 @@ const form = reactive({
 })
 
 function voltar() {
-    navigateTo('/') // ou '/conversas' se preferir ser explícito
+    navigateTo('/')
 }
 
 async function salvar() {

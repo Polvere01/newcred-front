@@ -21,9 +21,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm text-gray-700 mb-1">Planilha (xlsx)</label>
-                    <input type="file" accept=".xlsx" class="w-full" @change="onFile" />
-                    <p class="text-xs text-gray-500 mt-1">Precisa ter colunas: TELEFONE1 e NOME</p>
+                    <label class="block text-sm text-gray-700 mb-1">Planilha (xlsx) ou (csv)</label>
+                    <input type="file" accept=".xlsx,.csv,text/csv,application/vnd.ms-excel" class="w-full"
+                        @change="onFile" />
+                    <p class="text-xs text-gray-500 mt-1">
+                        Aceita XLSX ou CSV. Precisa ter colunas: TELEFONE1 e NOME
+                    </p>
                 </div>
 
                 <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 disabled:opacity-60"
@@ -76,9 +79,9 @@ function onFile(ev: Event) {
 
 
 function voltar() {
-    navigateTo('/') // ou '/conversas' se preferir ser explícito
+    navigateTo('/')
 }
-// 4️⃣ FUNÇÃO QUE VOCÊ PERGUNTOU
+
 async function disparar() {
     erro.value = null
     resultado.value = null
