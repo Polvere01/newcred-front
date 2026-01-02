@@ -16,13 +16,13 @@
         <!-- Dropdown (fica acima do overlay) -->
         <div v-if="open" class="absolute right-0 mt-2 w-52 rounded-xl border bg-white shadow-lg overflow-hidden z-50">
 
-          <button v-if="isAdmin" @click="goDisparo"
+          <button v-if="podeGerenciarOperadores" @click="goDisparo"
             class="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 flex items-center gap-2">
             <span class="inline-block h-2 w-2 rounded-full bg-green-500"></span>
             Disparo em massa
           </button>
 
-          <button v-if="isAdmin" @click="goNovoOperador"
+          <button v-if="podeGerenciarOperadores" @click="goNovoOperador"
             class="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 flex items-center gap-2">
             <span class="inline-block h-2 w-2 rounded-full bg-blue-500"></span>
             Novo operador
@@ -53,7 +53,7 @@ const user = computed(() => {
   return raw ? JSON.parse(raw) : null
 })
 
-const isAdmin = computed(() => user.value?.role === 'ADMIN')
+const podeGerenciarOperadores = computed(() => user.value?.role === 'ADMIN' || user.value?.role === 'SUPERVISOR')
 
 function toggle() {
   open.value = !open.value

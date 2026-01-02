@@ -30,11 +30,13 @@
 
                 <div>
                     <label class="block text-sm text-gray-700 mb-1">Função</label>
+
                     <select v-model="form.role" class="w-full border p-2 rounded-lg bg-white">
                         <option disabled value="">Selecione a função</option>
                         <option value="OPERADOR">Operador</option>
-                        <option value="ADMIN">Supervisor</option>
+                        <option value="SUPERVISOR">Supervisor</option>
                     </select>
+
                 </div>
 
                 <button
@@ -60,11 +62,18 @@ const loading = ref(false)
 const erro = ref<string | null>(null)
 const ok = ref(false)
 
+const user = computed(() => {
+    if (import.meta.server) return null
+    const raw = localStorage.getItem('user')
+    return raw ? JSON.parse(raw) : null
+})
+
 const form = reactive({
     nome: '',
     email: '',
     senha: '',
-    role: 'OPERADOR', // padrão
+    role: 'OPERADOR',
+    supervisorId: null as number | null,
 })
 
 function voltar() {
@@ -80,21 +89,35 @@ async function salvar() {
         const token = localStorage.getItem('token')
         if (!token) return navigateTo('/login')
 
+        const u = user.value // { id, nome, email, role }
+
+        const payload = {
+            nome: form.nome,
+            email: form.email,
+            senha: form.senha,
+            role: form.role,
+            supervisorId:
+                form.role === 'OPERADOR' && u?.role === 'SUPERVISOR'
+                    ? u.id
+                    : null,
+        }
+
         await $fetch(`${baseURL}/operadores`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
-            body: form,
+            body: payload,
         })
 
         ok.value = true
         form.nome = ''
         form.email = ''
         form.senha = ''
-        form.role = ''
+        form.role = 'OPERADOR'
     } catch (e: any) {
-        erro.value = e?.data?.message || 'Falha ao cadastrar'
+        erro.value = e?.data?.message || e?.message || 'Falha ao cadastrar'
     } finally {
         loading.value = false
     }
 }
+
 </script>

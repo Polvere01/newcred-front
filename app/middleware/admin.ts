@@ -9,9 +9,11 @@ export default defineNuxtRouteMiddleware((to) => {
     if (!token || !userRaw) return navigateTo('/login')
 
     const user = JSON.parse(userRaw)
-    const isAdmin =
+    const canManage =
         user.role === 'ADMIN' ||
-        (Array.isArray(user.roles) && user.roles.includes('ADMIN'))
+        user.role === 'SUPERVISOR' ||
+        (Array.isArray(user.roles) && (user.roles.includes('ADMIN') || user.roles.includes('SUPERVISOR')))
 
-    if (!isAdmin) return navigateTo('/') // ou /forbidden
+    if (!canManage) return navigateTo('/') // ou /forbidden
+
 })
