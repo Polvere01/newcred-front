@@ -2,7 +2,7 @@
   
 import { watch, ref } from 'vue'
 
-const audio = new Audio('/sounds/new-message.mp3')
+const audio = new Audio('/sounds/som.mp3')
 
 // guarda o estado anterior
 const lastIds = ref<number[]>([])
