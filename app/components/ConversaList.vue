@@ -1,5 +1,11 @@
 <script setup lang="ts">
+  
+import { watch, ref } from 'vue'
 
+const audio = new Audio('/sounds/new-message.mp3')
+
+// guarda o estado anterior
+const lastIds = ref<number[]>([])
   
 import type { Conversa } from '~/types/chat'
 import { formatarTelefone } from '~/utils/phone'
@@ -12,6 +18,41 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'select', conversa: Conversa): void
 }>()
+
+watch(
+  () => props.conversas,
+  (novaLista) => {
+    const novosIds = novaLista.map(c => c.id)
+
+    // primeira carga não toca som
+    if (lastIds.value.length === 0) {
+      lastIds.value = novosIds
+      return
+    }
+
+    // detecta conversa nova
+    const chegouNovaConversa = novosIds.some(
+      id => !lastIds.value.includes(id)
+    )
+
+    if (chegouNovaConversa) {
+      tocarSom()
+    }
+
+    lastIds.value = novosIds
+  },
+  { deep: true }
+)
+
+function tocarSom() {
+  try {
+    audio.currentTime = 0
+    audio.play()
+  } catch (e) {
+    // browser pode bloquear autoplay se usuário nunca interagiu
+    console.warn('Som bloqueado pelo navegador')
+  }
+}
 
 </script>
 
