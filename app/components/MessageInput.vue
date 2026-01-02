@@ -71,14 +71,14 @@
     </button>
 
     <!-- Input texto normal -->
-    <input
-      v-model="texto"
-      type="text"
-      placeholder="Digite uma mensagem"
-      class="flex-1 border rounded-lg px-3 py-2 outline-none"
-      @keyup.enter="onSendTexto"
-      :disabled="gravando"
-    />
+<textarea
+  v-model="texto"
+  rows="1"
+  placeholder="Digite uma mensagem"
+  class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none"
+  @keydown="onKeydown"
+  :disabled="gravando"
+/>
 
     <button
       class="bg-green-500 text-white px-4 rounded-lg py-2"
@@ -168,6 +168,21 @@ function onPickPdf(e: Event) {
   ;(e.target as HTMLInputElement).value = ''
 }
 
+function onKeydown(e: KeyboardEvent) {
+  // Enter sozinho = enviar
+  if (e.key === 'Enter' && !e.shiftKey && !e.altKey) {
+    e.preventDefault()
+    onSendTexto()
+    return
+  }
+
+  // Shift+Enter ou Alt+Enter = quebra linha
+  if (e.key === 'Enter' && (e.shiftKey || e.altKey)) {
+    // deixa o comportamento normal do textarea
+    return
+  }
+}
+  
 async function toggleGravacao() {
   if (busy.value) return
 
