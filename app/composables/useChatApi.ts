@@ -164,6 +164,23 @@ export function useChatApi() {
 
       return msg
     },
+
+    disparoTemplate: async (template: string, file: File) => {
+      const fd = new FormData()
+      fd.append('template', template)
+      fd.append('file', file)
+
+      // se teu backend retornar JSON com total/enviados/falhas, tipa aqui
+      return await api<{
+        total: number
+        enviados: number
+        falhas: number
+        erros?: { telefone: string; nome: string; motivo: string }[]
+      }>('/disparos/template', {
+        method: 'POST',
+        body: fd,
+      })
+    },
     baixarMedia: async (conversaId: number, mediaId: string) => {
       // importante: responseType blob
       const blob = await api<Blob>(`/conversas/${conversaId}/media/${mediaId}`, {
