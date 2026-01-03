@@ -7,22 +7,13 @@
 
     <!-- Mensagens -->
     <div ref="listRef" class="flex-1 min-h-0 p-4 overflow-y-auto space-y-2">
-      <MessageBubble
-        v-for="m in props.mensagens"
-        :key="m.id"
-        :mensagem="m"
-        @mediaLoaded="onMediaLoaded"
-      />
+      <MessageBubble v-for="m in props.mensagens" :key="m.id" :mensagem="m" @mediaLoaded="onMediaLoaded" />
       <div ref="bottomRef" class="h-px"></div>
     </div>
     <!-- Input -->
-    <MessageInput
-      @send="(texto) => emit('send', texto)"
-      @send-audio="(blob, mime) => emit('send-audio', blob, mime)"
-      @send-video="(file) => emit('send-video', file)"
-      @send-image="(file) => emit('send-image', file)"
-      @send-pdf="(file) => emit('send-pdf', file)"
-    />
+    <MessageInput @send="(texto) => emit('send', texto)" @send-audio="(blob, mime) => emit('send-audio', blob, mime)"
+      @send-video="(file) => emit('send-video', file)" @send-image="(file) => emit('send-image', file)"
+      @send-pdf="(file) => emit('send-pdf', file)" />
   </main>
 </template>
 
@@ -55,11 +46,10 @@ watch(
   () => props.mensagens.length,
   async () => {
     await nextTick()
-    scrollToBottom()
+    scrollToBottom(true) // <- FORÇA
   },
   { immediate: true }
 )
-
 function isNearBottom() {
   const el = listRef.value
   if (!el) return true
@@ -69,37 +59,24 @@ function isNearBottom() {
 
 function scrollToBottom(force = false) {
   const el = listRef.value
-  const bottom = bottomRef.value
-  if (!el || !bottom) return
+  if (!el) return
 
-  // se o cara subiu pra ler, não força
   if (!force && !isNearBottom()) return
 
-  // cancela qualquer loop anterior
   if (rafId) cancelAnimationFrame(rafId)
 
   let tries = 0
   const run = () => {
-    bottom.scrollIntoView({ block: 'end' }) // mais confiável que scrollTop
+    el.scrollTop = el.scrollHeight - el.clientHeight + 9999
     tries++
-    if (tries < 6) rafId = requestAnimationFrame(run) // segura mudanças de layout
+    if (tries < 6) rafId = requestAnimationFrame(run)
     else rafId = null
   }
 
-  // roda já e depois segura por alguns frames
   run()
 }
 
-watch(
-  () => props.mensagens.length,
-  async () => {
-    await nextTick()
-    scrollToBottom(true) // quando chega msg nova, força
-  },
-  { immediate: true }
-)
-
 function onMediaLoaded() {
-  nextTick(() => scrollToBottom(false)) // só força se estiver “perto do fim”
+  nextTick(() => scrollToBottom(true))
 }
 </script>
