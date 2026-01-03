@@ -170,9 +170,10 @@ export function useChatApi() {
       return msg
     },
 
-    disparoTemplate: async (template: string, file: File) => {
+    disparoTemplate: async (template: string, file: File, phoneNumberId: string) => {
       const fd = new FormData()
       fd.append('template', template)
+      fd.append('phoneNumberId', phoneNumberId)
       fd.append('file', file)
 
       // se teu backend retornar JSON com total/enviados/falhas, tipa aqui

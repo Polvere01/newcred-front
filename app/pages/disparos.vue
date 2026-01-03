@@ -21,6 +21,15 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm text-gray-700 mb-1">Produto / Número</label>
+                    <select v-model="produto" class="w-full border rounded-lg px-3 py-2 bg-white">
+                        <option value="INSS">INSS</option>
+                        <option value="CLT">CLT</option>
+                    </select>
+                </div>
+
+
+                <div>
                     <label class="block text-sm text-gray-700 mb-1">Planilha (xlsx) ou (csv)</label>
                     <input type="file" accept=".xlsx,.csv,text/csv,application/vnd.ms-excel" class="w-full"
                         @change="onFile" />
@@ -33,6 +42,8 @@
                     :disabled="busy || !template || !file">
                     {{ busy ? 'Disparando...' : 'Disparar' }}
                 </button>
+
+
 
                 <div v-if="erro" class="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg">
                     {{ erro }}
@@ -58,6 +69,16 @@
 </template>
 
 <script setup lang="ts">
+
+type Produto = 'CLT' | 'INSS'
+
+const produto = ref<Produto>('CLT')
+
+const phoneNumberIdByProduto: Record<Produto, string> = {
+    CLT: '956785587513587',
+    INSS: '956785587513587',
+}
+
 definePageMeta({ middleware: 'admin' })
 
 // 1️⃣ pega o composable
@@ -90,7 +111,8 @@ async function disparar() {
     try {
         resultado.value = await chatApi.disparoTemplate(
             template.value,
-            file.value!
+            file.value!,
+            phoneNumberIdByProduto[produto.value]
         )
     } catch (e: any) {
         erro.value =
