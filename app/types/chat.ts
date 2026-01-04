@@ -6,6 +6,8 @@ export interface Conversa {
   nome: string
   ultimaMensagem: string
   operadorNome: string | null
+  ultimaDirecao?: 'ENTRADA' | 'SAIDA' | '' | null
+  ultimaTipo?: string | null
 }
 
 export interface Mensagem {

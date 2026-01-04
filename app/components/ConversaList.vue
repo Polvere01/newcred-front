@@ -24,57 +24,54 @@ onMounted(() => {
   audio.volume = 0.6
 })
 
-const guard = useSoundGuard()
-// guarda "estado anterior" por conversa
 const lastSigById = ref<Record<number, string>>({})
 
+function tocarSom() {
+  const a = audio
+  if (!a) return
+  a.currentTime = 0
+  void a.play()
+}
+
 watch(
-  () =>
-    props.conversas.map(c => ({
-      id: c.id,
-      ultima: (c.ultimaMensagem || '').trim()
-    })),
+  () => props.conversas.map(c => ({
+    id: c.id,
+    ultima: (c.ultimaMensagem || '').trim(),
+    direcao: c.ultimaDirecao,
+    tipo: c.ultimaTipo
+  })),
   (lista) => {
-    // primeira carga
-    if (Object.keys(lastById.value).length === 0) {
+    if (Object.keys(lastSigById.value).length === 0) {
       const init: Record<number, string> = {}
-      for (const c of lista) init[c.id] = c.ultima
-      lastById.value = init
+      for (const c of lista) init[c.id] = `${c.direcao}|${c.tipo}|${c.ultima}`
+      lastSigById.value = init
       return
     }
 
     for (const c of lista) {
-      const prev = lastById.value[c.id]
-      const curr = c.ultima
+      const sig = `${c.direcao}|${c.tipo}|${c.ultima}`
+      const prev = lastSigById.value[c.id]
+      if (prev === sig) continue
 
-      if (!prev || prev === curr) continue
+      lastSigById.value[c.id] = sig
 
-      // 👇 se foi você que enviou, não toca
-      if (guard.value[c.id] === curr) {
-        delete guard.value[c.id]
-        lastById.value[c.id] = curr
-        continue
+      console.log('[SOM DEBUG]', {
+        id: c.id,
+        ultima: c.ultima,
+        direcao: c.direcao,
+        tipo: c.tipo,
+        sigAtual: sig,
+        sigAnterior: prev
+      })
+
+      if (c.direcao === 'ENTRADA') {
+        tocarSom()
+        break
       }
-
-      // 👉 mensagem nova REAL (cliente)
-      tocarSom()
-      lastById.value[c.id] = curr
-      break
     }
   },
   { deep: true }
 )
-function tocarSom() {
-  const a = audio
-  if (!a) return
-
-  try {
-    a.currentTime = 0
-    void a.play()
-  } catch {
-    console.warn('Som bloqueado pelo navegador')
-  }
-}
 </script>
 
 <template>

@@ -12,7 +12,6 @@ type EnviarReq = {
 type EnviarResp = { mensagemId: string, wamid: string }
 
 export function useChatApi() {
-  const guard = useSoundGuard()
   const config = useRuntimeConfig()
   const baseURL = config.public.apiBase as string
 
@@ -50,7 +49,6 @@ export function useChatApi() {
 
     enviarMensagem: async (conversa: Conversa, texto: string) => {
 
-      guard.value[conversa.id] = texto.trim()
       const payload: EnviarReq = {
         conversaId: conversa.id,
         waIdDestino: conversa.nome, // aqui é o número (sem 55 você pode guardar outro campo depois)
