@@ -87,6 +87,9 @@ function tocarSom() {
         <div class="font-medium">
           {{ formatarTelefone(c.nome) }}
         </div>
+        <div class="text-xs text-gray-500">
+          {{ c.operadorNome || '' }}
+        </div>
         <div class="text-sm text-gray-500 truncate">
           {{ c.ultimaMensagem }}
         </div>

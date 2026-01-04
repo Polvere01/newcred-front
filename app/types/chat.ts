@@ -5,6 +5,7 @@ export interface Conversa {
   id: number
   nome: string
   ultimaMensagem: string
+  operadorNome: string | null
 }
 
 export interface Mensagem {

@@ -37,6 +37,22 @@
                         <option value="SUPERVISOR">Supervisor</option>
                     </select>
 
+                    <div v-if="form.role === 'OPERADOR'">
+                        <label class="block text-sm text-gray-700 mb-1">Números / Produto</label>
+
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" value="CLT" v-model="produtosSelecionados" />
+                            CLT
+                        </label>
+
+                        <label class="flex items-center gap-2 text-sm mt-1">
+                            <input type="checkbox" value="INSS" v-model="produtosSelecionados" />
+                            INSS
+                        </label>
+
+                        <p class="text-xs text-gray-500 mt-1">Pode marcar até 2.</p>
+                    </div>
+
                 </div>
 
                 <button
@@ -62,11 +78,18 @@ const loading = ref(false)
 const erro = ref<string | null>(null)
 const ok = ref(false)
 
+const phoneNumberIdByProduto: Record<'CLT' | 'INSS', string> = {
+    CLT: '',
+    INSS: '956785587513587',
+}
+
 const user = computed(() => {
     if (import.meta.server) return null
     const raw = localStorage.getItem('user')
     return raw ? JSON.parse(raw) : null
 })
+
+const produtosSelecionados = ref<Array<'CLT' | 'INSS'>>(['CLT'])
 
 const form = reactive({
     nome: '',
@@ -74,6 +97,7 @@ const form = reactive({
     senha: '',
     role: 'OPERADOR',
     supervisorId: null as number | null,
+    phoneNumberIds: [] as string[],
 })
 
 function voltar() {
@@ -91,6 +115,11 @@ async function salvar() {
 
         const u = user.value // { id, nome, email, role }
 
+        const phoneNumberIds =
+            form.role === 'OPERADOR'
+                ? produtosSelecionados.value.map(p => phoneNumberIdByProduto[p])
+                : []
+
         const payload = {
             nome: form.nome,
             email: form.email,
@@ -100,7 +129,10 @@ async function salvar() {
                 form.role === 'OPERADOR' && u?.role === 'SUPERVISOR'
                     ? u.id
                     : null,
+            phoneNumberIds,
         }
+
+
 
         await $fetch(`${baseURL}/operadores`, {
             method: 'POST',
@@ -119,5 +151,5 @@ async function salvar() {
         loading.value = false
     }
 }
-
+produtosSelecionados.value = ['INSS']
 </script>
