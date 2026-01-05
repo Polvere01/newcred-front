@@ -79,7 +79,7 @@ const erro = ref<string | null>(null)
 const ok = ref(false)
 
 const phoneNumberIdByProduto: Record<'CLT' | 'INSS', string> = {
-    CLT: '',
+    CLT: '943126228881687',
     INSS: '956785587513587',
 }
 
