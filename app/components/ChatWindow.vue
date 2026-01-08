@@ -80,3 +80,12 @@ function onMediaLoaded() {
   nextTick(() => scrollToBottom(true))
 }
 </script>
+
+<style scoped>
+.chat-bg {
+  background-image: url('/fundo.jpg');
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 1000px 1000px;
+}
+</style>
