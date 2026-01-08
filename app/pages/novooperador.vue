@@ -41,8 +41,8 @@
                         <label class="block text-sm text-gray-700 mb-1">Números / Produto</label>
 
                         <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" value="CLT" v-model="produtosSelecionados" />
-                            CLT
+                            <input type="checkbox" value="ENTRANTE" v-model="produtosSelecionados" />
+                            ENTRANTE
                         </label>
 
                         <label class="flex items-center gap-2 text-sm mt-1">
@@ -78,8 +78,8 @@ const loading = ref(false)
 const erro = ref<string | null>(null)
 const ok = ref(false)
 
-const phoneNumberIdByProduto: Record<'CLT' | 'INSS', string> = {
-    CLT: '943126228881687',
+const phoneNumberIdByProduto: Record<'ENTRANTE' | 'INSS', string> = {
+    ENTRANTE: '943126228881687',
     INSS: '956785587513587',
 }
 
@@ -89,7 +89,7 @@ const user = computed(() => {
     return raw ? JSON.parse(raw) : null
 })
 
-const produtosSelecionados = ref<Array<'CLT' | 'INSS'>>(['CLT'])
+const produtosSelecionados = ref<Array<'ENTRANTE' | 'INSS'>>(['ENTRANTE'])
 
 const form = reactive({
     nome: '',

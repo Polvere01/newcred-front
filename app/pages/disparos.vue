@@ -24,7 +24,7 @@
                     <label class="block text-sm text-gray-700 mb-1">Produto / Número</label>
                     <select v-model="produto" class="w-full border rounded-lg px-3 py-2 bg-white">
                         <option value="INSS">INSS</option>
-                        <option value="CLT">CLT</option>
+                        <option value="ENTRANTE">ENTRANTE</option>
                     </select>
                 </div>
 
@@ -70,12 +70,12 @@
 
 <script setup lang="ts">
 
-type Produto = 'CLT' | 'INSS'
+type Produto = 'ENTRANTE' | 'INSS'
 
-const produto = ref<Produto>('CLT')
+const produto = ref<Produto>('ENTRANTE')
 
 const phoneNumberIdByProduto: Record<Produto, string> = {
-    CLT: '943126228881687',
+    ENTRANTE: '943126228881687',
     INSS: '956785587513587',
 }
 
