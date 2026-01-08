@@ -1,8 +1,8 @@
 <template>
   <div class="w-full flex mb-2" :class="mensagem.direcao === 'SAIDA' ? 'justify-end' : 'justify-start'">
-    <div class="max-w-[70%] px-3 py-2 rounded-lg text-sm" :class="mensagem.direcao === 'SAIDA'
-      ? 'bg-green-500 text-white rounded-br-none'
-      : 'bg-gray-200 text-gray-900 rounded-bl-none'
+    <div class="max-w-[70%] px-3 py-2 rounded-lg text-sm text-white" :class="mensagem.direcao === 'SAIDA'
+      ? 'bg-[#0b5421] text-white rounded-br-none'
+      : 'bg-[#000000] text-white rounded-bl-none'
       ">
       <!-- dentro do bubble -->
       <div v-if="mensagem.tipo === 'text'">
@@ -28,7 +28,7 @@
           <template v-if="mensagem.status === 'sent'">✓</template>
           <template v-else-if="mensagem.status === 'delivered'">✓✓</template>
           <template v-else-if="mensagem.status === 'read'">
-            <span class="text-blue-400">✓✓</span>
+            <span class="text-white">✓✓</span>
           </template>
           <template v-else-if="mensagem.status === 'failed'">⚠️</template>
         </span>

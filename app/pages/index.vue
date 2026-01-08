@@ -1,26 +1,17 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-100">
+  <div class="h-screen flex flex-col bg-[#d6d9de]">
+
     <!-- Header com logout -->
     <AppHeader />
 
     <!-- Conteúdo principal -->
     <div class="flex flex-1 min-h-0">
-      <ConversaList
-        :conversas="conversas"
-        :selecionada-id="conversaSelecionada?.id ?? null"
-        @select="conversaSelecionada = $event"
-      />
+      <ConversaList :conversas="conversas" :selecionada-id="conversaSelecionada?.id ?? null"
+        @select="conversaSelecionada = $event" />
 
-      <ChatWindow
-        class="flex-1 min-w-0"
-        :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
-        :mensagens="mensagens"
-        @send="enviarMensagem"
-        @send-audio="enviarAudio"
-        @send-video="enviarVideo"
-        @send-image="enviarImagem"
-        @send-pdf="enviarPdf"
-      />
+      <ChatWindow class="flex-1 min-w-0" :titulo="conversaSelecionada ? formatarTelefone(conversaSelecionada.nome) : ''"
+        :mensagens="mensagens" @send="enviarMensagem" @send-audio="enviarAudio" @send-video="enviarVideo"
+        @send-image="enviarImagem" @send-pdf="enviarPdf" />
     </div>
   </div>
 </template>
