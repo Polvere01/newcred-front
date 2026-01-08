@@ -16,4 +16,7 @@ export interface Mensagem {
   tipo: MensagemTipo
   direcao: Direcao
   createdAt: string
+  status?: 'sent' | 'delivered' | 'read' | 'failed' | 'played'
+  wamid?: string
+  mediaId?: string
 }

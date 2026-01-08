@@ -66,6 +66,7 @@ export function useChatApi() {
         direcao: 'SAIDA',
         createdAt: new Date().toISOString(),
         wamid: resp.wamid, // se teu type tiver isso (opcional)
+        status: 'sent',
       } as any
 
       return msg
@@ -93,6 +94,7 @@ export function useChatApi() {
         createdAt: new Date().toISOString(),
         wamid: resp.wamid,
         mediaId: resp.mediaId, // se você tiver no type, ótimo. se não tiver, deixa como any
+        status: 'sent',
       } as any
 
       return msg
@@ -117,6 +119,7 @@ export function useChatApi() {
         createdAt: new Date().toISOString(),
         wamid: resp.wamid,
         mediaId: resp.mediaId,
+        status: 'sent',
       } as any
 
       return msg
@@ -138,6 +141,7 @@ export function useChatApi() {
         tipo: 'imagem',
         direcao: 'SAIDA',
         createdAt: new Date().toISOString(),
+        status: 'sent',
         wamid: resp.wamid,
         mediaId: resp.mediaId,
       } as any
@@ -161,6 +165,7 @@ export function useChatApi() {
         tipo: 'pdf',
         direcao: 'SAIDA',
         createdAt: new Date().toISOString(),
+        status: 'sent',
         wamid: resp.wamid,
         mediaId: resp.mediaId,
       } as any
