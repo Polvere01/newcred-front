@@ -8,6 +8,7 @@ export interface Conversa {
   operadorNome: string | null
   ultimaDirecao?: 'ENTRADA' | 'SAIDA' | '' | null
   ultimaTipo?: string | null
+  phoneNumberId: string
 }
 
 export interface Mensagem {
@@ -19,4 +20,5 @@ export interface Mensagem {
   status?: 'sent' | 'delivered' | 'read' | 'failed' | 'played'
   wamid?: string
   mediaId?: string
+  phoneNumberId: string
 }

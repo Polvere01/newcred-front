@@ -7,6 +7,7 @@ type EnviarReq = {
   conversaId: number
   waIdDestino: string
   texto: string
+  phoneNumberId: string
 }
 
 type EnviarResp = { mensagemId: string, wamid: string }
@@ -53,6 +54,7 @@ export function useChatApi() {
         conversaId: conversa.id,
         waIdDestino: conversa.nome, // aqui é o número (sem 55 você pode guardar outro campo depois)
         texto,
+        phoneNumberId: conversa.phoneNumberId,
       }
 
       const resp = await api<EnviarResp>('/conversas/mensagens/enviar', {
@@ -67,6 +69,7 @@ export function useChatApi() {
         createdAt: new Date().toISOString(),
         wamid: resp.wamid, // se teu type tiver isso (opcional)
         status: 'sent',
+        
       } as any
 
       return msg
@@ -79,6 +82,7 @@ export function useChatApi() {
       const fd = new FormData()
       fd.append('waIdDestino', conversa.nome) // @RequestParam
       fd.append('audio', file)               // @RequestPart("audio")
+      fd.append('phoneNumberId', conversa.phoneNumberId)
 
       const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/audio`,
@@ -104,6 +108,7 @@ export function useChatApi() {
       const fd = new FormData()
       fd.append('waIdDestino', conversa.nome) // @RequestParam
       fd.append('video', file)               // @RequestPart("video")
+      fd.append('phoneNumberId', conversa.phoneNumberId)
 
       const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/video`,
@@ -129,6 +134,7 @@ export function useChatApi() {
       const fd = new FormData()
       fd.append('waIdDestino', conversa.nome)
       fd.append('imagem', file) // ou "imagem" — tem que bater com o @RequestPart
+      fd.append('phoneNumberId', conversa.phoneNumberId)
 
       const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/imagem`,
@@ -153,6 +159,7 @@ export function useChatApi() {
       const fd = new FormData()
       fd.append('waIdDestino', conversa.nome)
       fd.append('pdf', file)
+      fd.append('phoneNumberId', conversa.phoneNumberId)
 
       const resp = await api<{ mensagemId: string, wamid: string; mediaId: string }>(
         `/conversas/${conversa.id}/mensagens/pdf`,
