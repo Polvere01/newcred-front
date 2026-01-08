@@ -70,6 +70,56 @@
         </div>
       </div>
     </div>
+
+    <!-- Preview do vídeo -->
+    <div v-if="previewVideo" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+      <div class="bg-[#1c1c1c] rounded-xl p-4 max-w-2xl w-full">
+        <video :src="previewVideo" controls class="max-h-[60vh] w-full rounded-lg mb-4 bg-black" />
+
+        <div class="flex justify-end gap-2">
+          <button class="px-4 py-2 rounded-lg bg-[#2b2b2b] text-white" @click="cancelarPreviewVideo">
+            Cancelar
+          </button>
+
+          <button class="px-4 py-2 rounded-lg bg-green-600 text-white" @click="enviarVideoPreview">
+            Enviar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview do documento -->
+    <div v-if="previewDoc" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+      <div class="bg-[#1c1c1c] rounded-xl p-4 max-w-md w-full text-white">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">📄</span>
+          <div class="flex-1">
+            <div class="text-sm font-semibold truncate">
+              {{ previewDocFile?.name }}
+            </div>
+            <div class="text-xs text-gray-400">
+              {{ Math.round((previewDocFile?.size || 0) / 1024) }} KB
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center gap-2">
+          <a :href="previewDoc" target="_blank" class="text-sm text-blue-400 underline">
+            Abrir
+          </a>
+
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-lg bg-[#2b2b2b]" @click="cancelarPreviewDoc">
+              Cancelar
+            </button>
+
+            <button class="px-4 py-2 rounded-lg bg-green-600" @click="enviarDocPreview">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,7 +138,6 @@ const texto = ref('')
 const gravando = ref(false)
 const busy = ref(false)
 
-
 const menuOpen = ref(false)
 const videoInput = ref<HTMLInputElement | null>(null)
 const pdfInput = ref<HTMLInputElement | null>(null)
@@ -100,6 +149,12 @@ let stream: MediaStream | null = null
 
 const previewImage = ref<string | null>(null)
 const previewFile = ref<File | null>(null)
+
+const previewVideo = ref<string | null>(null)
+const previewVideoFile = ref<File | null>(null)
+
+const previewDoc = ref<string | null>(null)
+const previewDocFile = ref<File | null>(null)
 
 function onSendTexto() {
   const t = texto.value.trim()
@@ -118,7 +173,8 @@ function onVideoChange(e: Event) {
   const file = input.files?.[0]
   if (!file) return
 
-  emit('send-video', file)
+  previewVideoFile.value = file
+  previewVideo.value = URL.createObjectURL(file)
 
   // reset pra permitir selecionar o mesmo arquivo de novo
   input.value = ''
@@ -165,10 +221,12 @@ function abrirPdf() {
 function onPickPdf(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) return
-  emit('send-pdf', file)
+
+  previewDocFile.value = file
+  previewDoc.value = URL.createObjectURL(file)
+
     ; (e.target as HTMLInputElement).value = ''
 }
-
 function onKeydown(e: KeyboardEvent) {
   // Enter sozinho = enviar
   if (e.key === 'Enter' && !e.shiftKey && !e.altKey) {
@@ -245,4 +303,41 @@ function cancelarAudio() {
   gravando.value = false
   recorder?.stop()
 }
+
+function enviarVideoPreview() {
+  if (!previewVideoFile.value) return
+  emit('send-video', previewVideoFile.value)
+  limparPreviewVideo()
+}
+
+function cancelarPreviewVideo() {
+  limparPreviewVideo()
+}
+
+function limparPreviewVideo() {
+  if (previewVideo.value) {
+    URL.revokeObjectURL(previewVideo.value)
+  }
+  previewVideo.value = null
+  previewVideoFile.value = null
+}
+
+function enviarDocPreview() {
+  if (!previewDocFile.value) return
+  emit('send-pdf', previewDocFile.value)
+  limparPreviewDoc()
+}
+
+function cancelarPreviewDoc() {
+  limparPreviewDoc()
+}
+
+function limparPreviewDoc() {
+  if (previewDoc.value) {
+    URL.revokeObjectURL(previewDoc.value)
+  }
+  previewDoc.value = null
+  previewDocFile.value = null
+}
+
 </script>
