@@ -6,7 +6,7 @@
     </div>
 
     <!-- Mensagens -->
-    <div ref="listRef" class="flex-1 min-h-0 p-4 overflow-y-auto space-y-2 chat-bg">
+    <div ref="listRef" class="flex-1 min-h-0 p-4 overflow-y-auto space-y-2 chat-bg custom-scroll">
       <MessageBubble v-for="m in props.mensagens" :key="m.id" :mensagem="m" @mediaLoaded="onMediaLoaded" />
       <div ref="bottomRef" class="h-px"></div>
     </div>
@@ -87,5 +87,26 @@ function onMediaLoaded() {
   background-repeat: repeat;
   background-position: center;
   background-size: 1000px 1000px;
+}
+
+/* Scroll bonitinho */
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a transparent;
 }
 </style>
