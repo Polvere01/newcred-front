@@ -21,13 +21,13 @@
           class="absolute right-0 mt-2 w-52 rounded-xl border bg-[#1c1c1c] shadow-lg overflow-hidden z-50">
 
           <button v-if="podeGerenciarOperadores" @click="goDisparo"
-            class="w-full text-left px-4 py-3 text-sm hover:bg-[#2b2b2b] flex items-center gap-2">
+            class="w-full text-left px-4 py-3 text-sm hover:bg-[#2b2b2b] flex items-center gap-2 text-white">
             <span class="inline-block h-2 w-2 rounded-full bg-green-500"></span>
             Disparo em massa
           </button>
 
           <button v-if="podeGerenciarOperadores" @click="goNovoOperador"
-            class="w-full text-left px-4 py-3 text-sm hover:bg-[#2b2b2b] flex items-center gap-2">
+            class="w-full text-left px-4 py-3 text-sm hover:bg-[#2b2b2b] flex items-center gap-2 text-white">
             <span class="inline-block h-2 w-2 rounded-full bg-blue-500"></span>
             Novo operador
           </button>
