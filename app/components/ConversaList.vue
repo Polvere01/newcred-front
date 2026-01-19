@@ -99,7 +99,7 @@ watch(
   <aside class="w-80 bg-[#1c1c1c] border-r flex flex-col text-white">
     <div class="p-4 font-semibold border-b">Conversas</div>
 
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto custom-scroll">
       <div v-for="c in conversas" :key="c.id" class="p-4 cursor-pointer hover:bg-[#2b2b2b] border-b"
         :class="selecionadaId === c.id ? 'bg-[#2b2b2b]' : ''"
         @click="() => { unreadById[c.id] = 0; emit('select', c) }">
@@ -122,3 +122,29 @@ watch(
     </div>
   </aside>
 </template>
+
+<style scoped>
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a transparent;
+}
+</style>
