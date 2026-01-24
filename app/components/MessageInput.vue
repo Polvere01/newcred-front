@@ -41,10 +41,16 @@
     </button>
 
     <!-- Input texto normal -->
-    <textarea v-model="texto" rows="1" placeholder="Digite uma mensagem"
-      class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[#2b2b2b] text-white" @keydown="onKeydown"
-      :disabled="gravando" />
-
+<textarea
+  v-model="texto"
+  rows="1"
+  placeholder="Digite uma mensagem"
+  class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[#2b2b2b] text-white
+         max-h-32 overflow-y-auto leading-5"
+  @input="autoResize"
+  @keydown="onKeydown"
+  :disabled="gravando"
+/>
     <button class="bg-green-500 text-white px-4 rounded-lg py-2" @click="onSendTexto" :disabled="busy || gravando">
       Enviar
     </button>
@@ -124,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
 const emit = defineEmits<{
   (e: 'send', texto: string): void
@@ -156,11 +162,17 @@ const previewVideoFile = ref<File | null>(null)
 const previewDoc = ref<string | null>(null)
 const previewDocFile = ref<File | null>(null)
 
+  
 function onSendTexto() {
   const t = texto.value.trim()
   if (!t) return
   emit('send', t)
   texto.value = ''
+  
+  nextTick(() => {
+    const el = document.querySelector('textarea') as HTMLTextAreaElement | null
+    if (el) el.style.height = 'auto'
+  })
 }
 
 function selecionarVideo() {
@@ -204,6 +216,12 @@ function enviarImagemPreview() {
 
 function cancelarPreview() {
   limparPreview()
+}
+
+function autoResize(e: Event) {
+  const el = e.target as HTMLTextAreaElement
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 128) + 'px' // 128px = limite (tipo Whats)
 }
 
 function limparPreview() {
