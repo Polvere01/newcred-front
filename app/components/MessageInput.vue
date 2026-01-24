@@ -48,7 +48,8 @@
 
     <!-- Input texto normal -->
     <textarea v-model="texto" rows="1" placeholder="Digite uma mensagem"
-      class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[var(--surface2)] text-[color:var(--text)]"
+      class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[var(--surface2)] text-[color:var(--text)]
+       max-h-32 overflow-y-auto leading-5 input-scroll"
       @input="autoResize" @keydown="onKeydown" :disabled="gravando" />
 
     <button class="bg-green-500 text-[color:var(--text)] px-4 rounded-lg py-2" @click="onSendTexto"
@@ -361,3 +362,30 @@ function limparPreviewDoc() {
 }
 
 </script>
+
+<style scoped>
+.input-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.input-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.input-scroll::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.input-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+/* Firefox */
+.input-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a transparent;
+}
+</style>
