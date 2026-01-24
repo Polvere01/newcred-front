@@ -96,12 +96,14 @@ watch(
 </script>
 
 <template>
-  <aside class="w-80 bg-[#1c1c1c] border-r flex flex-col text-white">
-    <div class="p-4 font-semibold border-b">Conversas</div>
+  <aside
+    class="w-80 bg-[color:var(--surface)]  border-r border-[color:var(--border)] flex flex-col text-[color:var(--text)]">
+    <div class="p-4 font-semibold  border-b border-[color:var(--border)]">Conversas</div>
 
     <div class="flex-1 overflow-y-auto custom-scroll">
-      <div v-for="c in conversas" :key="c.id" class="p-4 cursor-pointer hover:bg-[#2b2b2b] border-b"
-        :class="selecionadaId === c.id ? 'bg-[#2b2b2b]' : ''"
+      <div v-for="c in conversas" :key="c.id"
+        class="p-4 cursor-pointer hover:bg-[color:var(--surface2)] border-b border-[color:var(--border)]"
+        :class="selecionadaId === c.id ? 'bg-[color:var(--surface2)]' : ''"
         @click="() => { unreadById[c.id] = 0; emit('select', c) }">
         <div class="font-medium flex items-center justify-between gap-2">
           <span>{{ formatarTelefone(c.nome) }}</span>
@@ -112,10 +114,10 @@ watch(
           </span>
         </div>
 
-        <div class="text-xs text-[#c9c9c9] ">
+        <div class="text-xs text-[var(--muted)] ">
           {{ c.operadorNome || '' }}
         </div>
-        <div class="text-sm text-[#c9c9c9] truncate">
+        <div class="text-sm text-[var(--muted)] truncate">
           {{ previewUltima(c) }}
         </div>
       </div>
@@ -146,5 +148,13 @@ watch(
 .custom-scroll {
   scrollbar-width: thin;
   scrollbar-color: #3a3a3a transparent;
+}
+
+.conversa-item:hover {
+  background: var(--surface2);
+}
+
+.conversa-ativa {
+  background: var(--surface2);
 }
 </style>
