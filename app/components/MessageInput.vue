@@ -1,22 +1,27 @@
 <template>
-  <div class="p-3 bg-[#1c1c1c] border-t flex gap-2 items-center relative text-white">
+  <div
+    class="p-3 bg-[color:var(--surface)] border-t border-[color:var(--border)] flex gap-2 items-center relative text-[color:var(--text)]">
     <!-- Botão + -->
-    <button type="button" class="px-3 py-2 rounded-lg bg-[#2b2b2b] hover:bg-[#2b2b2b]" @click="menuOpen = !menuOpen"
-      :disabled="busy || gravando" title="Adicionar">
+    <button type="button" class="px-3 py-2 rounded-lg bg-[var(--surface2)] hover:bg-[color:var(--surface2)] border"
+      @click="menuOpen = !menuOpen" :disabled="busy || gravando" title="Adicionar">
       +
     </button>
 
     <!-- menu -->
     <div v-if="menuOpen"
-      class="absolute bottom-14 left-3 bg-[#1c1c1c] border rounded-lg shadow-md w-44 overflow-hidden z-10">
-      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[#2b2b2b]" @click="selecionarVideo">Adicionar
+      class="absolute bottom-14 left-3 bg-[color:var(--surface)] border rounded-lg shadow-md w-44 overflow-hidden z-10">
+      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[color:var(--surface2)]"
+        @click="selecionarVideo">Adicionar
         vídeo
       </button>
 
-      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[#2b2b2b]" @click="abrirImagem">Adicionar imagem
+      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[color:var(--surface2)]"
+        @click="abrirImagem">Adicionar
+        imagem
       </button>
 
-      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[#2b2b2b]" @click="abrirPdf">Adicionar
+      <button type="button" class="w-full text-left px-3 py-2 hover:bg-[color:var(--surface2)]"
+        @click="abrirPdf">Adicionar
         PDF</button>
 
     </div>
@@ -29,23 +34,25 @@
     <input ref="pdfInput" type="file" accept="application/pdf" class="hidden" @change="onPickPdf" />
 
     <!-- Botão de gravar/enviar áudio -->
-    <button type="button" class="px-3 py-2 rounded-lg text-white " :class="gravando ? 'bg-red-600' : 'bg-gray-600'"
-      @click="toggleGravacao" :disabled="busy" title="Gravar áudio">
+    <button type="button" class="px-3 py-2 rounded-lg text-[color:var(--text)] "
+      :class="gravando ? 'bg-red-600' : 'bg-gray-600'" @click="toggleGravacao" :disabled="busy" title="Gravar áudio">
       <span v-if="!gravando">🎤</span>
       <span v-else>⏹</span>
     </button>
 
-    <button v-if="gravando" type="button" class="px-3 py-2 rounded-lg bg-[#2b2b2b] hover:bg-[#3a3a3a] text-white"
+    <button v-if="gravando" type="button"
+      class="px-3 py-2 rounded-lg bg-[var(--surface2)] hover:bg-[#3a3a3a] text-[color:var(--text)]"
       @click="cancelarAudio" :disabled="busy" title="Cancelar áudio">
       ✖
     </button>
 
     <!-- Input texto normal -->
     <textarea v-model="texto" rows="1" placeholder="Digite uma mensagem"
-      class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[#2b2b2b] text-white" @keydown="onKeydown"
-      :disabled="gravando" />
+      class="flex-1 border rounded-lg px-3 py-2 outline-none resize-none bg-[var(--surface2)] text-[color:var(--text)]"
+      @keydown="onKeydown" :disabled="gravando" />
 
-    <button class="bg-green-500 text-white px-4 rounded-lg py-2" @click="onSendTexto" :disabled="busy || gravando">
+    <button class="bg-green-500 text-[color:var(--text)] px-4 rounded-lg py-2" @click="onSendTexto"
+      :disabled="busy || gravando">
       Enviar
     </button>
 
@@ -56,15 +63,15 @@
 
     <!-- Preview da imagem -->
     <div v-if="previewImage" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-      <div class="bg-[#1c1c1c] rounded-xl p-4 max-w-md w-full">
+      <div class="bg-[color:var(--surface)] rounded-xl p-4 max-w-md w-full">
         <img :src="previewImage" class="max-h-[60vh] w-full object-contain rounded-lg mb-4" />
 
         <div class="flex justify-end gap-2">
-          <button class="px-4 py-2 rounded-lg bg-[#2b2b2b] text-white" @click="cancelarPreview">
+          <button class="px-4 py-2 rounded-lg bg-[var(--surface2)] text-[color:var(--text)]" @click="cancelarPreview">
             Cancelar
           </button>
 
-          <button class="px-4 py-2 rounded-lg bg-green-600 text-white" @click="enviarImagemPreview">
+          <button class="px-4 py-2 rounded-lg bg-green-600 text-[color:var(--text)]" @click="enviarImagemPreview">
             Enviar
           </button>
         </div>
@@ -73,15 +80,16 @@
 
     <!-- Preview do vídeo -->
     <div v-if="previewVideo" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-      <div class="bg-[#1c1c1c] rounded-xl p-4 max-w-2xl w-full">
+      <div class="bg-[color:var(--surface)] rounded-xl p-4 max-w-2xl w-full">
         <video :src="previewVideo" controls class="max-h-[60vh] w-full rounded-lg mb-4 bg-black" />
 
         <div class="flex justify-end gap-2">
-          <button class="px-4 py-2 rounded-lg bg-[#2b2b2b] text-white" @click="cancelarPreviewVideo">
+          <button class="px-4 py-2 rounded-lg bg-[var(--surface2)] text-[color:var(--text)]"
+            @click="cancelarPreviewVideo">
             Cancelar
           </button>
 
-          <button class="px-4 py-2 rounded-lg bg-green-600 text-white" @click="enviarVideoPreview">
+          <button class="px-4 py-2 rounded-lg bg-green-600 text-[color:var(--text)]" @click="enviarVideoPreview">
             Enviar
           </button>
         </div>
@@ -90,7 +98,7 @@
 
     <!-- Preview do documento -->
     <div v-if="previewDoc" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-      <div class="bg-[#1c1c1c] rounded-xl p-4 max-w-md w-full text-white">
+      <div class="bg-[color:var(--surface)] rounded-xl p-4 max-w-md w-full text-[color:var(--text)]">
         <div class="flex items-center gap-3 mb-4">
           <span class="text-3xl">📄</span>
           <div class="flex-1">
@@ -109,7 +117,7 @@
           </a>
 
           <div class="flex gap-2">
-            <button class="px-4 py-2 rounded-lg bg-[#2b2b2b]" @click="cancelarPreviewDoc">
+            <button class="px-4 py-2 rounded-lg bg-[var(--surface2)]" @click="cancelarPreviewDoc">
               Cancelar
             </button>
 

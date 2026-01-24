@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col bg-[#d6d9de]">
+  <div class="h-screen flex flex-col bg-[var(--bg)] text-[color:var(--text)]">
 
     <!-- Header com logout -->
     <AppHeader />

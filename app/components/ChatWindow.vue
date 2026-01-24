@@ -1,7 +1,7 @@
 <template>
-  <main class="flex-1 flex flex-col min-h-0 min-w-0 bg-[#1c1c1c] text-white">
+  <main class="flex-1 flex flex-col min-h-0 min-w-0 bg-[color:var(--surface)] text-[color:var(--text)]">
     <!-- Header -->
-    <div class="p-4 bg-[##1c1c1c] border-b font-semibold">
+    <div class="p-4 bg-[##1c1c1c] border-b border-[color:var(--border)] font-semibold">
       {{ props.titulo || 'Selecione uma conversa' }}
     </div>
 
@@ -83,7 +83,7 @@ function onMediaLoaded() {
 
 <style scoped>
 .chat-bg {
-  background-image: url('/fundo.jpg');
+  background-color: var(--bg);
   background-repeat: repeat;
   background-position: center;
   background-size: 1000px 1000px;
@@ -93,18 +93,22 @@ function onMediaLoaded() {
 .custom-scroll::-webkit-scrollbar {
   width: 10px;
 }
+
 .custom-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scroll::-webkit-scrollbar-thumb {
   background: #3a3a3a;
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
+
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #4a4a4a;
 }
+
 .custom-scroll {
   scrollbar-width: thin;
   scrollbar-color: #3a3a3a transparent;

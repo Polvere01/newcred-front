@@ -1,9 +1,9 @@
 <template>
-    <main class="min-h-[calc(100vh-64px)] flex items-center justify-center p-6 bg-gray-50">
-        <div class="w-full max-w-lg bg-white border rounded-2xl shadow-sm p-6">
+    <main class="min-h-[calc(100vh-64px)] flex items-center justify-center p-6 var(--surface2)-50">
+        <div class="w-full max-w-lg var(--surface) border rounded-2xl shadow-sm p-6">
 
             <button type="button" @click="voltar"
-                class="mb-4 inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+                class="mb-4 inline-flex items-center gap-2 text-sm text-var(--muted) hover:text-[color:var(--text)]">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -22,7 +22,7 @@
 
                 <div>
                     <label class="block text-sm text-gray-700 mb-1">Produto / Número</label>
-                    <select v-model="produto" class="w-full border rounded-lg px-3 py-2 bg-white">
+                    <select v-model="produto" class="w-full border rounded-lg px-3 py-2 var(--surface)">
                         <option value="INSS">INSS</option>
                         <option value="ENTRANTE">ENTRANTE</option>
                     </select>
@@ -49,7 +49,7 @@
                     {{ erro }}
                 </div>
 
-                <div v-if="resultado" class="text-sm bg-gray-50 border rounded-lg p-3">
+                <div v-if="resultado" class="text-sm var(--surface2)-50 border rounded-lg p-3">
                     <div>Total: <b>{{ resultado.total }}</b></div>
                     <div>Enviados: <b>{{ resultado.enviados }}</b></div>
                     <div>Falhas: <b>{{ resultado.falhas }}</b></div>
