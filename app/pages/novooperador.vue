@@ -79,8 +79,8 @@ const erro = ref<string | null>(null)
 const ok = ref(false)
 
 const phoneNumberIdByProduto: Record<'ENTRANTE' | 'INSS', string> = {
-    ENTRANTE: '943126228881687',
-    INSS: '956785587513587',
+    ENTRANTE: '1135594189642377',
+    INSS: '1135594189642377',
 }
 
 const user = computed(() => {

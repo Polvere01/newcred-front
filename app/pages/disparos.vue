@@ -75,8 +75,8 @@ type Produto = 'ENTRANTE' | 'INSS'
 const produto = ref<Produto>('ENTRANTE')
 
 const phoneNumberIdByProduto: Record<Produto, string> = {
-    ENTRANTE: '943126228881687',
-    INSS: '956785587513587',
+    ENTRANTE: '1135594189642377',
+    INSS: '1135594189642377',
 }
 
 definePageMeta({ middleware: 'admin' })
